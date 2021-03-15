@@ -4,16 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsDown , faThumbsUp , faImage , faMoneyCheckAlt, faSearchDollar } from '@fortawesome/free-solid-svg-icons'
 
 class App extends Component {
-  state = {  }
+  state = { 
+    isLoading :false,
+    invoices :  []
+ }
+
   remove(id){
     console.log(id);
-    let updateedInvoices = [...this.state.invoices].filter (i => i.id !== id)
+    let updateedInvoices = [...this.state.invoices].filter (i => i.invoice_id !== id)
     this.setState({invoices : updateedInvoices});
 }
 
 async componentDidMount() {
   const response = await fetch(
-    "https://n6kemm35r2.execute-api.ap-south-1.amazonaws.com/development/getInvoices"
+    "https://epxaw5ag98.execute-api.ap-south-1.amazonaws.com/development"
   );
   const body = await response.json();
   this.setState({ invoices: body, isLoading: false });
@@ -28,16 +32,17 @@ render() {
 
   let invoices = 
     allinvoices.map( invoice => 
-      <tr key={invoice.id}>
+      <tr key={invoice.invoice_id}>
         <td>{invoice.Vendor}</td>
         <td>{invoice.Amount}</td>
-        <td>{invoice.invoice}</td>
-        <td>{invoice.Date}</td>
-        <td><Button className="btn btn-lg btn-success" onClick={ () => this.remove(invoice.id)} > <FontAwesomeIcon icon={faThumbsUp} /> OK </Button></td>
-        <td><Button className="btn btn-lg btn-danger" onClick={ () => this.remove(invoice.id)} > <FontAwesomeIcon icon={faThumbsDown} /> NOK </Button></td>
-        <td><Button className="btn btn-lg btn-info" onClick={ () => this.remove(invoice.id)} > <FontAwesomeIcon icon={faMoneyCheckAlt} /> 50% </Button></td>
-        <td><Button className="btn btn-lg btn-warning" onClick={ () => this.remove(invoice.id)} ><FontAwesomeIcon icon={faSearchDollar} /> ?? </Button></td>
-        <td><Button className="btn btn-lg btn-info" onClick={ () => this.remove(invoice.id)} > <FontAwesomeIcon icon={faImage} /> Image </Button></td>
+        <td>{invoice.invoice_number}</td>
+        <td>{invoice.invoice_date}</td>
+        <td>{invoice.is_paid === 'true' ? 'Paid' : 'Unpaid'}</td>
+        <td><Button className="btn btn-lg btn-success" onClick={ () => this.remove(invoice.invoice_id)} > <FontAwesomeIcon icon={faThumbsUp} /> OK </Button></td>
+        <td><Button className="btn btn-lg btn-danger" onClick={ () => this.remove(invoice.invoice_id)} > <FontAwesomeIcon icon={faThumbsDown} /> NOK </Button></td>
+        <td><Button className="btn btn-lg btn-info" onClick={ () => this.remove(invoice.invoice_id)} > <FontAwesomeIcon icon={faMoneyCheckAlt} /> 50% </Button></td>
+        <td><Button className="btn btn-lg btn-warning" onClick={ () => this.remove(invoice.invoice_id)} ><FontAwesomeIcon icon={faSearchDollar} /> ?? </Button></td>
+        <td><Button className="btn btn-lg btn-info" onClick={ () => this.remove(invoice.invoice_id)} > <FontAwesomeIcon icon={faImage} /> Image </Button></td>
       </tr>
   )
 
@@ -58,13 +63,14 @@ render() {
                         <th>Amount</th>
                         <th>Invoice #</th>
                         <th>Date</th>
+                        <th>Status</th>
                         <th colSpan="4">Actions</th>
                         <th>Image</th>
                     </tr>
                 </thead>
             
             <tbody>
-                {this.state.invoices.length === 0 ? <td colSpan="9">All caught up!</td> : invoices}
+                {this.state.invoices.length === 0 ? <td colSpan="10">All caught up!</td> : invoices}
             </tbody>
             </Table>
 
