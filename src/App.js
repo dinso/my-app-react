@@ -17,10 +17,10 @@ class App extends Component {
 
 async componentDidMount() {
   const response = await fetch(
-    "https://epxaw5ag98.execute-api.ap-south-1.amazonaws.com/development"
+    "https://pa0uf98nyg.execute-api.ap-south-1.amazonaws.com/development/invoices"
   );
   const body = await response.json();
-  this.setState({ invoices: body, isLoading: false });
+  this.setState({ invoices: body.invoices, isLoading: false });
 }
 
 render() { 
